@@ -8,6 +8,6 @@ namespace RestServer.Models
         Created = 0,
 
         [Description("Deleted")]
-        Edited = 1,
+        Deleted = 1,
     }
 }

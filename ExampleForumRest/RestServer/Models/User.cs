@@ -8,6 +8,6 @@ namespace RestServer.Models
         public string Name { get; set; }
         public string PsText { get; set; }
         public UserStatuses Status;
-        public IList<Message> Messages { get; set; } = new List<Message>();
+        public ICollection<Message> Messages { get; set; }
     }
 }

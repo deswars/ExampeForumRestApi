@@ -82,6 +82,7 @@ namespace RestServer.Controllers
                 return NotFound();
             }
 
+            await _context.Messages.Where(x => x.Topic == topic).ForEachAsync(x => _context.Messages.Remove(x));
             _context.Topics.Remove(topic);
             await _context.SaveChangesAsync();
 

@@ -7,6 +7,6 @@ namespace RestServer.Models
         public long Id { get; set; }
         public string Name { get; set; }
         public TopicStatuses Status { get; set; }
-        public IList<Topic> Topics { get; set; } = new List<Topic>();
+        public ICollection<Topic> Topics { get; set; }
     }
 }

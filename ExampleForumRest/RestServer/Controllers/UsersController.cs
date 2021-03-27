@@ -22,9 +22,9 @@ namespace RestServer.Controllers
 
         // GET: api/Users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserDTO>>> GetTodoItems()
+        public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers()
         {
-            return await _context.Users.Select(x => UserDTO.ToDTO(x)).ToListAsync();
+            return await _context.Users.Where(x => (x.Status & UserStatuses.Deleted) == 0).Select(x => UserDTO.ToDTO(x)).ToListAsync();
         }
 
         // GET: api/Users/{id}
@@ -84,7 +84,7 @@ namespace RestServer.Controllers
                 return NotFound();
             }
 
-            _context.Users.Remove(user);
+            user.Status = user.Status |= UserStatuses.Deleted;
             await _context.SaveChangesAsync();
 
             return NoContent();

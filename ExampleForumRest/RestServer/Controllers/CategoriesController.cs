@@ -22,7 +22,7 @@ namespace RestServer.Controllers
 
         // GET: api/Cattegories
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetTodoItems()
+        public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetGategories()
         {
             return await _context.Categories.Select(x => CategoryDTO.ToDTO(x)).ToListAsync();
         }
@@ -84,6 +84,11 @@ namespace RestServer.Controllers
                 return NotFound();
             }
 
+            //await _context.Messages.Where(x => x.Topic == topic).ForEachAsync(x => _context.Messages.Remove(x));
+
+            var topics = _context.Topics.Where(x => x.CategoryId == id).Include(x => x.Messages);
+            await topics.ForEachAsync(x => _context.Messages.RemoveRange(x.Messages));
+            _context.Topics.RemoveRange(topics);
             _context.Categories.Remove(cattegory);
             await _context.SaveChangesAsync();
 
