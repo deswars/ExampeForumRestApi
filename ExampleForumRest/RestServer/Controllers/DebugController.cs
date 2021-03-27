@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RestServer.DTO;
-using RestServer.DTO.Debug;
+using RestServer.DTO.DebugDTO;
 using RestServer.Models;
 using System;
 using System.Collections.Generic;
