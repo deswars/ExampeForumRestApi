@@ -149,7 +149,7 @@ namespace RestServer.Controllers
         }
 
         /// <summary>
-        /// Returns subset of up to 10 messages of existing user? starting fro newest
+        /// Returns subset of up to 10 messages of existing user, starting from newest
         /// </summary>
         /// <param name="id">User identifier</param>
         /// <param name="pageNumber">Page number</param>
