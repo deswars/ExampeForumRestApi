@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using RestServer.DTO;
 using RestServer.DTO.DebugDTO;
 using RestServer.Models;
 using System;
@@ -11,20 +10,29 @@ using System.Threading.Tasks;
 
 namespace RestServer.Controllers
 {
+    /// <summary>
+    /// Controller for debug purposes
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class DebugController : ControllerBase
     {
         private readonly ForumContext _context;
-        private const int pageSize = 10;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="context">Database context</param>
         public DebugController(ForumContext context)
         {
             _context = context;
         }
 
-        // GET: api/DebugController/fill
+        /// <summary>
+        /// Generates 2 categories, 10 topics, 3 users and 100 messages
+        /// </summary>
         [HttpGet("fill")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> GetTodoItems()
         {
             int categoryCount = 2;
@@ -98,8 +106,12 @@ namespace RestServer.Controllers
             return NoContent();
         }
 
-        // GET: api/DebugController/getall
+        /// <summary>
+        /// Creates a tree representation of all forum
+        /// </summary>
+        /// <returns>All forum data in tree form</returns>
         [HttpGet("getall")]
+        [ProducesResponseType(typeof(IEnumerable<CategoryTreeDTO>), 200)]
         public async Task<ActionResult<IEnumerable<CategoryTreeDTO>>> GetAll()
         {
             return await _context.Categories.Include(category => category.Topics).ThenInclude(topic => topic.Messages).Select(x => CategoryTreeDTO.ToDTO(x)).ToListAsync();

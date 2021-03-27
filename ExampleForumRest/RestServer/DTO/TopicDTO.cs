@@ -1,12 +1,16 @@
 ﻿using RestServer.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace RestServer.DTO
 {
     public class TopicDTO
     {
         public long Id { get; set; }
+        [Required]
         public string Name { get; set; }
+        [Required]
         public TopicStatuses Status { get; set; }
+        [Required]
         public long CategoryId { get; set; }
 
         public static TopicDTO ToDTO(Topic topic)

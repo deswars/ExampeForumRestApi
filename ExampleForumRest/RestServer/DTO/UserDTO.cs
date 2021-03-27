@@ -1,5 +1,6 @@
 ﻿using RestServer.Models;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace RestServer.DTO
@@ -7,8 +8,10 @@ namespace RestServer.DTO
     public class UserDTO
     {
         public long Id { get; set; }
+        [Required]
         public string Name { get; set; }
         public string PsText { get; set; }
+        [Required]
         public UserStatuses Status { get; set; }
 
         public static UserDTO ToDTO(User user)

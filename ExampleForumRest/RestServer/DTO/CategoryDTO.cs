@@ -1,11 +1,14 @@
 ﻿using RestServer.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace RestServer.DTO
 {
     public class CategoryDTO
     {
         public long Id { get; set; }
+        [Required]
         public string Name { get; set; }
+        [Required]
         public TopicStatuses Status { get; set; }
 
         public static CategoryDTO ToDTO(Category category)

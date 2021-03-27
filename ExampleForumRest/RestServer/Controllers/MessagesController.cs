@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using RestServer.DTO;
 using RestServer.Models;
 
 namespace RestServer.Controllers
 {
+    /// <summary>
+    /// Message controller
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class MessagesController : ControllerBase
@@ -15,13 +18,23 @@ namespace RestServer.Controllers
         private readonly ForumContext _context;
         private const int pageSize = 10;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="context">Database context</param>
         public MessagesController(ForumContext context)
         {
             _context = context;
         }
 
-        // GET: api/Messages/{id}
+        /// <summary>
+        /// Returns message
+        /// </summary>
+        /// <param name="id">Message identifier</param>
+        /// <returns>Message data</returns>
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(MessageReadDTO), 200)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<MessageReadDTO>> GetMessage(long id)
         {
             var message = await _context.Messages.FindAsync(id);
@@ -34,8 +47,15 @@ namespace RestServer.Controllers
             return MessageReadDTO.ToDTO(message);
         }
 
-        // PUT: api/Messages/{id}
+        /// <summary>
+        /// Updates existing message. Sets message status to "edited" and editTime to current time 
+        /// </summary>
+        /// <param name="id">Message identifier</param>
+        /// <param name="messageDTO">Updated message data</param>
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> PutMessage(long id, MessageWriteDTO messageDTO)
         {
             if (id != messageDTO.Id)
@@ -51,13 +71,20 @@ namespace RestServer.Controllers
 
             MessageWriteDTO.UpdateFromDTO(messageDTO, message);
             message.Modified = DateTime.Now;
+            message.Status |= MessageStatuses.Edited;
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        // POST: api/Messages
+        /// <summary>
+        /// Creates new message. Sets createdDate to current time
+        /// </summary>
+        /// <param name="messageDTO">New message data</param>
+        /// <returns>Message data</returns>
         [HttpPost]
+        [ProducesResponseType(typeof(MessageReadDTO), 200)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<MessageReadDTO>> PostMessage(MessageWriteDTO messageDTO)
         {
             if (!TopicExists(messageDTO.TopicId) || !UserExists(messageDTO.AuthorId))
@@ -74,8 +101,13 @@ namespace RestServer.Controllers
             return CreatedAtAction(nameof(GetMessage), new { id = message.Id }, MessageReadDTO.ToDTO(message));
         }
 
-        // DELETE: api/Messages/{id}
+        /// <summary>
+        /// Deletes existing message
+        /// </summary>
+        /// <param name="id">Message identifier</param>
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteMessage(long id)
         {
             var message = await _context.Messages.FindAsync(id);
@@ -90,8 +122,14 @@ namespace RestServer.Controllers
             return NoContent();
         }
 
-        // GET: api/Messages/{id}/Author
+        /// <summary>
+        /// Return author of message
+        /// </summary>
+        /// <param name="id">Message identifier</param>
+        /// <returns>Author data</returns>
         [HttpGet("{id}/author")]
+        [ProducesResponseType(typeof(AuthorDTO), 200)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<AuthorDTO>> GetMessageAuthor(long id)
         {
             var message = await _context.Messages.FindAsync(id);
