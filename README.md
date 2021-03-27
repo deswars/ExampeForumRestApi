@@ -45,7 +45,7 @@
     - DELETE - delete user
   - /api/users/{id}/messages
   	- GET - get all user messages
-  - /api/users/{id}messages/page/id
+  - /api/users/{id}messages/last/{pagenumber}
     - GET - get selected page of all user messages startinf from newest
 
 
