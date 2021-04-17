@@ -1,4 +1,4 @@
-# ForumRestAPiExample
+# ForumRestApiExample
 ## Rest Api
 - categories
   - /api/categories
